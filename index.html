@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chess Game</title>
+    <style>
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+#chessboard {
+    display: grid;
+    grid-template-columns: repeat(8, 60px);
+    grid-template-rows: repeat(8, 60px);
+    gap: 0;
+}
+
+.square {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+}
+
+.black {
+    background-color: #769656;
+}
+
+.white {
+    background-color: #eeeed2;
+}
+
+.piece {
+    cursor: pointer;
+}
+
+
+    </style>
+</head>
+<body>
+    <div id="chessboard"></div>
+<script>
+
+const chessboard = document.getElementById('chessboard');
+
+const initialBoard = [
+    ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+    ['', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', ''],
+    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+    ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+];
+
+const pieces = {
+    'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟',
+    'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙'
+};
+
+let selectedPiece = null;
+let selectedSquare = null;
+
+function createBoard() {
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            const square = document.createElement('div');
+            square.classList.add('square');
+            square.classList.add((row + col) % 2 === 0 ? 'white' : 'black');
+            square.dataset.row = row;
+            square.dataset.col = col;
+            chessboard.appendChild(square);
+
+            if (initialBoard[row][col]) {
+                const piece = document.createElement('span');
+                piece.classList.add('piece');
+                piece.textContent = pieces[initialBoard[row][col]];
+                piece.dataset.row = row;
+                piece.dataset.col = col;
+                square.appendChild(piece);
+            }
+        }
+    }
+}
+
+function movePiece(piece, targetSquare) {
+    targetSquare.appendChild(piece);
+    piece.dataset.row = targetSquare.dataset.row;
+    piece.dataset.col = targetSquare.dataset.col;
+}
+
+chessboard.addEventListener('click', (event) => {
+    const target = event.target;
+    if (target.classList.contains('piece')) {
+        if (selectedPiece) {
+            selectedPiece.classList.remove('selected');
+        }
+        selectedPiece = target;
+        selectedPiece.classList.add('selected');
+    } else if (target.classList.contains('square') && selectedPiece) {
+        movePiece(selectedPiece, target);
+        selectedPiece.classList.remove('selected');
+        selectedPiece = null;
+    }
+});
+
+createBoard();
+
+
+</script>
+</body>
+</html>
